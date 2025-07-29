@@ -1,0 +1,84 @@
+{
+  "name": "Data Analyzer",
+  "description": "Analyze and summarize data with insights and recommendations",
+  "category": "research",
+  "tags": ["analysis", "data", "research", "insights"],
+  "system_prompt": "You are a data analyst expert. Analyze the provided data, identify patterns, extract key insights, and provide actionable recommendations based on your analysis.",
+  "user_prompt": "Analyze the following data about {{data_type}}: {{data}}. Provide {{analysis_depth}} analysis including key findings, patterns, and {{num_recommendations}} actionable recommendations.",
+  "variables": {
+    "data_type": {
+      "type": "string",
+      "description": "Type of data being analyzed",
+      "default": "sales performance"
+    },
+    "data": {
+      "type": "string",
+      "description": "The data to analyze",
+      "default": ""
+    },
+    "analysis_depth": {
+      "type": "string",
+      "description": "Depth of analysis",
+      "default": "comprehensive",
+      "enum": ["basic", "standard", "comprehensive", "detailed"]
+    },
+    "num_recommendations": {
+      "type": "number",
+      "description": "Number of recommendations to provide",
+      "default": 3,
+      "min": 1,
+      "max": 10
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string",
+        "description": "Executive summary of the analysis"
+      },
+      "key_findings": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "finding": {"type": "string"},
+            "importance": {"type": "string", "enum": ["high", "medium", "low"]},
+            "evidence": {"type": "string"}
+          },
+          "required": ["finding", "importance"]
+        }
+      },
+      "patterns": {
+        "type": "array",
+        "items": {"type": "string"}
+      },
+      "recommendations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "recommendation": {"type": "string"},
+            "priority": {"type": "string", "enum": ["high", "medium", "low"]},
+            "expected_impact": {"type": "string"}
+          },
+          "required": ["recommendation", "priority"]
+        }
+      },
+      "limitations": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "Limitations of the analysis"
+      }
+    },
+    "required": ["summary", "key_findings", "recommendations"]
+  },
+  "provider_settings": {
+    "recommended_provider": "openrouter",
+    "recommended_model": "anthropic/claude-3.5-sonnet",
+    "temperature": 0.3,
+    "max_tokens": 2500
+  },
+  "validation_mode": "strict",
+  "is_public": true
+}

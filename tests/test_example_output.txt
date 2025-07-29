@@ -1,0 +1,20 @@
+================================================================
+Running tests with coverage...
+================================================================
+
+tests/unit/test_health.py::TestHealthCheck::test_health_check_returns_200 PASSED
+tests/unit/test_health.py::TestHealthCheck::test_health_check_returns_correct_data PASSED
+tests/unit/test_health.py::TestHealthCheck::test_health_check_includes_database_status PASSED
+tests/unit/test_health.py::TestHealthCheck::test_health_check_handles_database_error PASSED
+
+---------- coverage: platform linux, python 3.11.0 -----------
+Name                    Stmts   Miss  Cover   Missing
+-----------------------------------------------------
+app/__init__.py             1      0   100%
+app/config.py              42      0   100%
+app/database.py            28      0   100%
+app/main.py                24      0   100%
+-----------------------------------------------------
+TOTAL                      95      0   100%
+
+✅ All tests passed!

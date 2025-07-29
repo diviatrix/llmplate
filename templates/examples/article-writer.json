@@ -1,0 +1,71 @@
+{
+  "name": "Article Writer",
+  "description": "Generate well-structured articles on any topic",
+  "category": "content",
+  "tags": ["article", "blog", "content", "writing"],
+  "system_prompt": "You are a professional content writer. Create engaging, well-researched articles with proper structure including introduction, main body with subheadings, and conclusion.",
+  "user_prompt": "Write a {{length}}-word article about {{topic}}. {{#if tone}}The tone should be {{tone}}.{{/if}} {{#if audience}}The target audience is {{audience}}.{{/if}} Include relevant examples and maintain a clear structure with subheadings.",
+  "variables": {
+    "topic": {
+      "type": "string",
+      "description": "Main topic of the article",
+      "default": "artificial intelligence"
+    },
+    "length": {
+      "type": "number",
+      "description": "Approximate word count",
+      "default": 500,
+      "min": 100,
+      "max": 2000
+    },
+    "tone": {
+      "type": "string",
+      "description": "Writing tone",
+      "default": "professional",
+      "enum": ["professional", "casual", "academic", "conversational", "formal"]
+    },
+    "audience": {
+      "type": "string",
+      "description": "Target audience",
+      "default": null
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "introduction": {
+        "type": "string"
+      },
+      "sections": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "heading": {"type": "string"},
+            "content": {"type": "string"}
+          },
+          "required": ["heading", "content"]
+        }
+      },
+      "conclusion": {
+        "type": "string"
+      },
+      "keywords": {
+        "type": "array",
+        "items": {"type": "string"}
+      }
+    },
+    "required": ["title", "introduction", "sections", "conclusion"]
+  },
+  "provider_settings": {
+    "recommended_provider": "openrouter",
+    "recommended_model": "anthropic/claude-3.5-sonnet",
+    "temperature": 0.8,
+    "max_tokens": 3000
+  },
+  "validation_mode": "strict",
+  "is_public": true
+}
