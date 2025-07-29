@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMplate - Frontend Mocks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        .subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .section {
+            margin-bottom: 60px;
+        }
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        .interface-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .interface-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .interface-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: #4CAF50;
+        }
+        .interface-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        .interface-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .interface-desc {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .interface-features {
+            list-style: none;
+            margin-top: 20px;
+        }
+        .interface-features li {
+            padding: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .interface-features li:before {
+            content: "✓";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .use-case-card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s;
+        }
+        .use-case-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        .use-case-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        .use-case-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .use-case-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .auth-card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            max-width: 400px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .tech-badge {
+            padding: 6px 16px;
+            background: #e3f2fd;
+            color: #1565c0;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .comparison-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 20px;
+        }
+        .comparison-table th {
+            background: #f5f5f5;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .comparison-table td {
+            padding: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .check {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .cross {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LLMplate</h1>
+        <p class="subtitle">AI Template Generation System - Frontend Mockups</p>
+
+        <!-- Two Main Interfaces -->
+        <section class="section">
+            <h2 class="section-title">🎯 Two Interfaces for Different Users</h2>
+            <p style="margin-bottom: 20px; color: #666;">
+                <strong>Backend Status:</strong> 95% Complete - Most features are production-ready 
+                <span style="color: #4CAF50; font-weight: bold;">✓</span>
+            </p>
+            <div class="interface-grid">
+                <!-- Simple Interface -->
+                <a href="simple-interface.html" class="interface-card">
+                    <div class="interface-icon">✨</div>
+                    <h3 class="interface-title">Simple Interface</h3>
+                    <p class="interface-desc">For non-technical users who want to create and use templates visually without coding.</p>
+                    <ul class="interface-features">
+                        <li>Visual drag-and-drop template builder</li>
+                        <li>Pre-built component library</li>
+                        <li>Conditional logic without code</li>
+                        <li>Real-time preview</li>
+                        <li>Template gallery for quick start</li>
+                    </ul>
+                    <p style="margin-top: 20px; color: #666;">Perfect for: Teachers, HR, Content Creators, Business Users</p>
+                </a>
+
+                <!-- Engineer Interface -->
+                <a href="engineer-interface.html" class="interface-card">
+                    <div class="interface-icon">🔧</div>
+                    <h3 class="interface-title">Engineer Interface</h3>
+                    <p class="interface-desc">For technical users who need full control over template creation and customization.</p>
+                    <ul class="interface-features">
+                        <li>Advanced template editor with syntax highlighting</li>
+                        <li>JSON Schema validation</li>
+                        <li>Variable management & conditions</li>
+                        <li>API integration options</li>
+                        <li>Version control & testing tools</li>
+                    </ul>
+                    <p style="margin-top: 20px; color: #666;">Perfect for: Developers, Data Scientists, Technical Writers</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Feature Comparison -->
+        <section class="section">
+            <h2 class="section-title">📊 Interface Comparison</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Simple Interface</th>
+                        <th>Engineer Interface</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Template Gallery</td>
+                        <td class="check">✓ Curated selection</td>
+                        <td class="check">✓ Full library access</td>
+                    </tr>
+                    <tr>
+                        <td>Template Creation</td>
+                        <td class="cross">✗ Use existing only</td>
+                        <td class="check">✓ Create from scratch</td>
+                    </tr>
+                    <tr>
+                        <td>Input Method</td>
+                        <td>Simple forms</td>
+                        <td>Code editor + forms</td>
+                    </tr>
+                    <tr>
+                        <td>Validation</td>
+                        <td>Automatic</td>
+                        <td>Custom JSON Schema</td>
+                    </tr>
+                    <tr>
+                        <td>Export Formats</td>
+                        <td>PDF, Word, Email</td>
+                        <td>All formats + API</td>
+                    </tr>
+                    <tr>
+                        <td>Learning Curve</td>
+                        <td>5 minutes</td>
+                        <td>1-2 hours</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Use Case Examples -->
+        <section class="section">
+            <h2 class="section-title">📚 Real-World Use Cases</h2>
+            <div class="use-cases-grid">
+                <a href="teacher-simple-ui.html" class="use-case-card">
+                    <div class="use-case-icon">👩‍🏫</div>
+                    <h3 class="use-case-title">Teacher Use Case</h3>
+                    <p class="use-case-desc">See how educators use the simple interface to create lesson plans, quizzes, and educational materials in minutes.</p>
+                </a>
+
+                <a href="hr-simple-ui.html" class="use-case-card">
+                    <div class="use-case-icon">👔</div>
+                    <h3 class="use-case-title">HR Professional Use Case</h3>
+                    <p class="use-case-desc">Watch HR teams generate job descriptions, offer letters, and policy documents with just a few clicks.</p>
+                </a>
+
+                <a href="auth-pages.html" class="use-case-card">
+                    <div class="use-case-icon">🔐</div>
+                    <h3 class="use-case-title">Authentication Flow</h3>
+                    <p class="use-case-desc">Secure login and registration with OAuth support for Google and GitHub integration.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Technical Details -->
+        <section class="section">
+            <h2 class="section-title">🛠 Technical Implementation</h2>
+            <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <h3 style="margin-bottom: 20px;">Backend API Integration</h3>
+                <p style="color: #666; margin-bottom: 20px;">Both interfaces connect to the same FastAPI backend with these endpoints:</p>
+                
+                <ul style="list-style: none; font-family: monospace; background: #f5f5f5; padding: 20px; border-radius: 4px;">
+                    <li style="padding: 4px 0;">POST /auth/login - User authentication</li>
+                    <li style="padding: 4px 0;">GET /templates - List available templates</li>
+                    <li style="padding: 4px 0;">POST /generate - Generate content from template</li>
+                    <li style="padding: 4px 0;">GET /generate/{job_id} - Check generation status</li>
+                    <li style="padding: 4px 0;">GET /providers/models - List available AI models</li>
+                </ul>
+
+                <h3 style="margin-top: 30px; margin-bottom: 20px;">Suggested Frontend Stack</h3>
+                <div class="tech-stack">
+                    <span class="tech-badge">React / Next.js</span>
+                    <span class="tech-badge">TypeScript</span>
+                    <span class="tech-badge">Tailwind CSS</span>
+                    <span class="tech-badge">Monaco Editor (Engineer UI)</span>
+                    <span class="tech-badge">React Hook Form</span>
+                    <span class="tech-badge">React Query</span>
+                    <span class="tech-badge">Zustand (State)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Structure -->
+        <section class="section">
+            <h2 class="section-title">📁 Mockup Structure</h2>
+            <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); font-family: monospace;">
+                <pre style="margin: 0;">
+frontend-mocks/
+├── index.html              # This page
+├── auth-pages.html         # Login/Register forms
+├── simple-interface.html   # Non-technical user interface
+├── engineer-interface.html # Technical user interface  
+├── teacher-simple-ui.html  # Teacher use case demo
+├── hr-simple-ui.html      # HR use case demo
+├── serve_mocks.py         # Python server with navigation
+└── README.md              # Documentation
+                </pre>
+            </div>
+        </section>
+    </div>
+    <script>
+        // Feature status integration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show feature status panel for overview
+            if (typeof createFeatureStatusPanel === 'function') {
+                const features = [
+                    ['Authentication System', 'auth.emailLogin'],
+                    ['Template Management', 'templates.createTemplate'],
+                    ['AI Generation', 'generation.startGeneration'],
+                    ['Export System', 'export.exportPDF'],
+                    ['Provider Integration', 'providers.openRouter'],
+                    ['Visual Builder (Frontend)', 'planned.visualBuilder'],
+                    ['Real-time Updates', 'planned.realtimeUpdates']
+                ];
+                const panel = createFeatureStatusPanel(features);
+                document.body.insertAdjacentHTML('beforeend', panel);
+            }
+        });
+    </script>
+</body>
+</html>

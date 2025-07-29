@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMplate - Engineer Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .layout {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background: #252526;
+            border-right: 1px solid #3e3e42;
+            overflow-y: auto;
+        }
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background: #2d2d30;
+            border-bottom: 1px solid #3e3e42;
+            padding: 0 20px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+        .tabs {
+            display: flex;
+            background: #252526;
+            border-bottom: 1px solid #3e3e42;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-right: 1px solid #3e3e42;
+            font-size: 13px;
+            color: #969696;
+        }
+        .tab.active {
+            background: #1e1e1e;
+            color: #ffffff;
+            border-bottom: 2px solid #4CAF50;
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        .editor-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .toolbar {
+            background: #2d2d30;
+            padding: 8px 16px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            border-bottom: 1px solid #3e3e42;
+        }
+        .editor {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #1e1e1e;
+        }
+        .code-editor {
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 16px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #d4d4d4;
+            min-height: 300px;
+        }
+        .preview-pane {
+            width: 400px;
+            background: #252526;
+            border-left: 1px solid #3e3e42;
+            display: flex;
+            flex-direction: column;
+        }
+        .section {
+            margin-bottom: 24px;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #cccccc;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: #969696;
+        }
+        input, select, textarea {
+            width: 100%;
+            background: #3c3c3c;
+            border: 1px solid #3e3e42;
+            color: #cccccc;
+            padding: 6px 8px;
+            font-size: 13px;
+            font-family: inherit;
+            border-radius: 3px;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007ACC;
+        }
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 3px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: #0e639c;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1177bb;
+        }
+        .btn-secondary {
+            background: #3c3c3c;
+            color: #cccccc;
+            border: 1px solid #3e3e42;
+        }
+        .file-tree {
+            padding: 8px 0;
+        }
+        .tree-item {
+            padding: 4px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tree-item:hover {
+            background: #2a2d2e;
+        }
+        .tree-item.active {
+            background: #094771;
+        }
+        .tree-icon {
+            font-size: 12px;
+        }
+        .status-bar {
+            background: #007ACC;
+            color: white;
+            padding: 4px 16px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .monaco-style {
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+        .variable {
+            color: #9CDCFE;
+        }
+        .string {
+            color: #CE9178;
+        }
+        .keyword {
+            color: #569CD6;
+        }
+        .comment {
+            color: #6A9955;
+        }
+        .json-schema {
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        .preview-content {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .output-block {
+            background: #1e1e1e;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #3e3e42;
+            font-size: 12px;
+        }
+        .metric-label {
+            color: #969696;
+        }
+        .metric-value {
+            color: #4CAF50;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div style="padding: 16px; border-bottom: 1px solid #3e3e42;">
+                <div style="font-size: 12px; color: #969696; margin-bottom: 8px;">TEMPLATES</div>
+            </div>
+            <div class="file-tree">
+                <div class="tree-item active">
+                    <span class="tree-icon">📄</span>
+                    <span>api-documentation.jinja2</span>
+                </div>
+                <div class="tree-item">
+                    <span class="tree-icon">📄</span>
+                    <span>code-generator.jinja2</span>
+                </div>
+                <div class="tree-item">
+                    <span class="tree-icon">📄</span>
+                    <span>test-suite.jinja2</span>
+                </div>
+                <div class="tree-item">
+                    <span class="tree-icon">📄</span>
+                    <span>data-transform.jinja2</span>
+                </div>
+                <div class="tree-item">
+                    <span class="tree-icon">📁</span>
+                    <span>custom/</span>
+                </div>
+                <div class="tree-item" style="padding-left: 32px;">
+                    <span class="tree-icon">📄</span>
+                    <span>migration-script.jinja2</span>
+                </div>
+                <div class="tree-item" style="padding-left: 32px;">
+                    <span class="tree-icon">📄</span>
+                    <span>config-builder.jinja2</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">LLMplate // Engineer Mode</div>
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <span style="font-size: 12px; color: #969696;">Model: GPT-4</span>
+                    <span style="font-size: 12px; color: #969696;">Tokens: 2,456</span>
+                    <span style="font-size: 12px; color: #969696;">Cost: $0.074</span>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active">Template Editor</div>
+                <div class="tab">Variables</div>
+                <div class="tab">Schema Validation</div>
+                <div class="tab">Test Runner</div>
+                <div class="tab">Output</div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <!-- Editor Pane -->
+                <div class="editor-pane">
+                    <div class="toolbar">
+                        <button class="btn btn-primary">
+                            Run Template 
+                            <span id="runStatus" style="margin-left: 4px; font-size: 11px;"></span>
+                        </button>
+                        <button class="btn btn-secondary">
+                            Validate
+                            <span id="validateStatus" style="margin-left: 4px; font-size: 11px;"></span>
+                        </button>
+                        <button class="btn btn-secondary">Format</button>
+                        <select style="width: 150px;">
+                            <option>Jinja2</option>
+                            <option>Handlebars</option>
+                            <option>Liquid</option>
+                        </select>
+                    </div>
+                    
+                    <div class="editor">
+                        <div class="section">
+                            <h3 class="section-title">System Prompt</h3>
+                            <div class="code-editor" contenteditable="true">
+<span class="comment"># API Documentation Generator</span>
+You are an expert technical writer specializing in API documentation.
+Generate comprehensive REST API documentation following OpenAPI 3.0 specification.
+
+<span class="keyword">Context:</span>
+- Service: <span class="variable">{{ service_name }}</span>
+- Version: <span class="variable">{{ api_version }}</span>
+- Base URL: <span class="variable">{{ base_url }}</span>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3 class="section-title">Template Body</h3>
+                            <div class="code-editor" contenteditable="true">
+<span class="keyword">openapi:</span> <span class="string">"3.0.0"</span>
+<span class="keyword">info:</span>
+  <span class="keyword">title:</span> <span class="variable">{{ service_name }}</span> API
+  <span class="keyword">version:</span> <span class="variable">{{ api_version }}</span>
+  <span class="keyword">description:</span> |
+    <span class="variable">{{ description }}</span>
+    
+    <span class="keyword">{% if features %}</span>
+    ## Features
+    <span class="keyword">{% for feature in features %}</span>
+    - <span class="variable">{{ feature }}</span>
+    <span class="keyword">{% endfor %}</span>
+    <span class="keyword">{% endif %}</span>
+
+<span class="keyword">servers:</span>
+  - <span class="keyword">url:</span> <span class="variable">{{ base_url }}</span>
+    <span class="keyword">description:</span> <span class="variable">{{ environment }}</span> server
+
+<span class="keyword">paths:</span>
+  <span class="keyword">{% for endpoint in endpoints %}</span>
+  <span class="variable">{{ endpoint.path }}:</span>
+    <span class="variable">{{ endpoint.method }}:</span>
+      <span class="keyword">summary:</span> <span class="variable">{{ endpoint.summary }}</span>
+      <span class="keyword">parameters:</span>
+        <span class="keyword">{% for param in endpoint.parameters %}</span>
+        - <span class="keyword">name:</span> <span class="variable">{{ param.name }}</span>
+          <span class="keyword">in:</span> <span class="variable">{{ param.in }}</span>
+          <span class="keyword">required:</span> <span class="variable">{{ param.required }}</span>
+          <span class="keyword">schema:</span>
+            <span class="keyword">type:</span> <span class="variable">{{ param.type }}</span>
+        <span class="keyword">{% endfor %}</span>
+  <span class="keyword">{% endfor %}</span>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3 class="section-title">Validation Schema</h3>
+                            <div class="json-schema">
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["service_name", "api_version", "base_url", "endpoints"],
+  "properties": {
+    "service_name": { "type": "string", "minLength": 1 },
+    "api_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "base_url": { "type": "string", "format": "uri" },
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "method", "summary"],
+        "properties": {
+          "path": { "type": "string" },
+          "method": { "enum": ["get", "post", "put", "delete", "patch"] }
+        }
+      }
+    }
+  }
+}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Pane -->
+                <div class="preview-pane">
+                    <div class="tabs">
+                        <div class="tab active">Preview</div>
+                        <div class="tab">Metrics</div>
+                    </div>
+                    
+                    <div class="preview-content">
+                        <div class="section">
+                            <h3 class="section-title">Test Variables</h3>
+                            <form>
+                                <div class="form-group">
+                                    <label>service_name</label>
+                                    <input type="text" value="User Management">
+                                </div>
+                                <div class="form-group">
+                                    <label>api_version</label>
+                                    <input type="text" value="1.0.0">
+                                </div>
+                                <div class="form-group">
+                                    <label>base_url</label>
+                                    <input type="text" value="https://api.example.com/v1">
+                                </div>
+                                <div class="form-group">
+                                    <label>environment</label>
+                                    <select>
+                                        <option>Production</option>
+                                        <option>Staging</option>
+                                        <option>Development</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="section">
+                            <h3 class="section-title">Generation Metrics</h3>
+                            <div class="metric">
+                                <span class="metric-label">Template Complexity</span>
+                                <span class="metric-value">Medium</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Estimated Tokens</span>
+                                <span class="metric-value">~2,500</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Estimated Cost</span>
+                                <span class="metric-value">$0.075</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Validation</span>
+                                <span class="metric-value">✓ Passed</span>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3 class="section-title">Output Preview</h3>
+                            <div class="output-block">
+openapi: "3.0.0"
+info:
+  title: User Management API
+  version: 1.0.0
+  description: |
+    Comprehensive user management service...
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+
+paths:
+  /users:
+    get:
+      summary: List all users
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div>Template: api-documentation.jinja2 • UTF-8 • Jinja2</div>
+                <div>Ln 42, Col 16 • Spaces: 2 • Git: main</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Feature status integration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update button statuses
+            if (typeof createFeatureIndicator === 'function') {
+                const runEl = document.getElementById('runStatus');
+                if (runEl) runEl.innerHTML = createFeatureIndicator('generation.startGeneration', true);
+                
+                const validateEl = document.getElementById('validateStatus');
+                if (validateEl) validateEl.innerHTML = createFeatureIndicator('templates.validateTemplate', true);
+            }
+            
+            // Show feature status panel
+            if (typeof createFeatureStatusPanel === 'function') {
+                const features = [
+                    ['Template Editor', 'templates.createTemplate'],
+                    ['Validation System', 'templates.validateTemplate'],
+                    ['Generation Engine', 'generation.startGeneration'],
+                    ['Progress Tracking', 'generation.progressTracking'],
+                    ['Cost Calculation', 'generation.costCalculation'],
+                    ['Export Formats', 'export.exportJSON'],
+                    ['OpenRouter Integration', 'providers.openRouter'],
+                    ['Ollama Integration', 'providers.ollama']
+                ];
+                const panel = createFeatureStatusPanel(features);
+                document.body.insertAdjacentHTML('beforeend', panel);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMplate - Visual Template Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4CAF50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .builder-container {
+            display: flex;
+            height: calc(100vh - 64px);
+        }
+        /* Left Sidebar - Components */
+        .components-panel {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            background: #fafafa;
+        }
+        .component-category {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .category-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .component-item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: move;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .component-item:hover {
+            border-color: #4CAF50;
+            transform: translateX(4px);
+        }
+        .component-icon {
+            font-size: 20px;
+        }
+        .component-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        /* Center - Canvas */
+        .canvas-area {
+            flex: 1;
+            background: #f5f5f5;
+            padding: 40px;
+            overflow-y: auto;
+        }
+        .canvas {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            min-height: 600px;
+            padding: 40px;
+        }
+        .canvas-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+            color: #1a1a1a;
+        }
+        .drop-zone {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .drop-zone.active {
+            border-color: #4CAF50;
+            background: #f1f8f4;
+        }
+        .template-block {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .template-block:hover {
+            border-color: #4CAF50;
+        }
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .block-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .block-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .block-action {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .block-action:hover {
+            background: #f0f0f0;
+        }
+        .block-content {
+            color: #666;
+            font-size: 14px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .variable-tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 0 4px;
+        }
+        /* Right Sidebar - Properties */
+        .properties-panel {
+            width: 320px;
+            background: white;
+            border-left: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        .property-group {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .property-label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .property-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .property-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+        .property-help {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #45a049;
+        }
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        .preview-btn {
+            margin-top: 20px;
+            width: 100%;
+        }
+        /* Conditional Block */
+        .conditional-block {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+        .condition-setup {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 12px;
+        }
+        .condition-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        /* Loop Block */
+        .loop-block {
+            background: #e7f3ff;
+            border: 2px solid #2196f3;
+        }
+        /* Variable Input */
+        .variable-input {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        .variable-config {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        /* Empty State */
+        .empty-canvas {
+            text-align: center;
+            padding: 60px;
+            color: #999;
+        }
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        .empty-text {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .empty-hint {
+            font-size: 14px;
+            color: #aaa;
+        }
+        /* Toolbar */
+        .toolbar {
+            background: #fafafa;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toolbar-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .mode-toggle {
+            display: flex;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .mode-btn {
+            padding: 8px 16px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .mode-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+        /* Preview Modal */
+        .preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .preview-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .preview-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .preview-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span>✨</span>
+                <span>LLMplate Visual Builder</span>
+                <span id="visualBuilderStatus" style="margin-left: 8px;"></span>
+            </div>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div class="mode-toggle">
+                    <button class="mode-btn active">Visual Builder</button>
+                    <button class="mode-btn">Use Template</button>
+                </div>
+                <button class="btn btn-primary">
+                    Save Template
+                    <span id="saveTemplateStatus" style="margin-left: 6px;"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div>
+            <span style="font-weight: 600;">Building:</span>
+            <span>Blog Post Template</span>
+        </div>
+        <div class="toolbar-actions">
+            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">
+                ↶ Undo
+            </button>
+            <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">
+                ↷ Redo
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Builder -->
+    <div class="builder-container">
+        <!-- Left Panel - Components -->
+        <div class="components-panel">
+            <div class="panel-header">
+                📦 Template Components
+            </div>
+            
+            <div class="component-category">
+                <div class="category-title">Content Blocks</div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">📝</span>
+                    <span class="component-label">Text Block</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">🎯</span>
+                    <span class="component-label">Title/Heading</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">📋</span>
+                    <span class="component-label">List</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">💭</span>
+                    <span class="component-label">Quote</span>
+                </div>
+            </div>
+
+            <div class="component-category">
+                <div class="category-title">User Inputs</div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">💬</span>
+                    <span class="component-label">Text Input</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">📊</span>
+                    <span class="component-label">Dropdown</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">🔢</span>
+                    <span class="component-label">Number Input</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">📅</span>
+                    <span class="component-label">Date Picker</span>
+                </div>
+            </div>
+
+            <div class="component-category">
+                <div class="category-title">Logic & Flow</div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">🔀</span>
+                    <span class="component-label">If/Then Condition</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">🔁</span>
+                    <span class="component-label">Repeat/Loop</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">🎲</span>
+                    <span class="component-label">Random Choice</span>
+                </div>
+            </div>
+
+            <div class="component-category">
+                <div class="category-title">AI Instructions</div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">🤖</span>
+                    <span class="component-label">AI Prompt</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">🎨</span>
+                    <span class="component-label">Style Guide</span>
+                </div>
+                <div class="component-item" draggable="true">
+                    <span class="component-icon">📏</span>
+                    <span class="component-label">Length Control</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center - Canvas -->
+        <div class="canvas-area">
+            <div class="canvas">
+                <h2 class="canvas-title">Blog Post Template</h2>
+                
+                <!-- Example Built Template -->
+                <div class="template-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <span>🎯</span>
+                            <span>Blog Title</span>
+                        </div>
+                        <div class="block-actions">
+                            <button class="block-action">⚙️</button>
+                            <button class="block-action">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        Create an engaging title about <span class="variable-tag">{{topic}}</span>
+                    </div>
+                </div>
+
+                <div class="template-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <span>📝</span>
+                            <span>Introduction</span>
+                        </div>
+                        <div class="block-actions">
+                            <button class="block-action">⚙️</button>
+                            <button class="block-action">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        Write a compelling introduction (2-3 paragraphs) that hooks the reader and introduces the topic of <span class="variable-tag">{{topic}}</span>. 
+                        Target audience: <span class="variable-tag">{{audience}}</span>
+                    </div>
+                </div>
+
+                <div class="template-block conditional-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <span>🔀</span>
+                            <span>Conditional Section</span>
+                        </div>
+                        <div class="block-actions">
+                            <button class="block-action">⚙️</button>
+                            <button class="block-action">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <div class="condition-setup">
+                            <div class="condition-row">
+                                <span>IF</span>
+                                <select class="property-select" style="width: auto;">
+                                    <option>include_examples</option>
+                                    <option>audience</option>
+                                    <option>tone</option>
+                                </select>
+                                <select class="property-select" style="width: auto;">
+                                    <option>equals</option>
+                                    <option>not equals</option>
+                                    <option>contains</option>
+                                </select>
+                                <input type="text" class="property-input" style="width: 100px;" value="yes">
+                            </div>
+                            <div style="padding: 12px; background: #fff; border-radius: 4px; margin-top: 8px;">
+                                <strong>Then include:</strong> Real-world examples and case studies
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-block loop-block">
+                    <div class="block-header">
+                        <div class="block-title">
+                            <span>🔁</span>
+                            <span>Main Points</span>
+                        </div>
+                        <div class="block-actions">
+                            <button class="block-action">⚙️</button>
+                            <button class="block-action">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <div style="margin-bottom: 12px;">
+                            For each item in <span class="variable-tag">{{key_points}}</span>:
+                        </div>
+                        <div style="padding: 12px; background: white; border-radius: 4px;">
+                            <strong>H2 Heading:</strong> Expand on the point<br>
+                            <strong>Content:</strong> 2-3 paragraphs explaining the concept<br>
+                            <strong>Example:</strong> Include a relevant example
+                        </div>
+                    </div>
+                </div>
+
+                <div class="drop-zone">
+                    <div class="empty-icon">➕</div>
+                    <div>Drag components here to add them</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Properties -->
+        <div class="properties-panel">
+            <div class="panel-header">
+                ⚙️ Component Settings
+            </div>
+
+            <div class="property-group">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">Template Variables</h3>
+                
+                <div style="margin-bottom: 16px;">
+                    <div class="property-label">Topic</div>
+                    <input type="text" class="property-input" placeholder="Variable name">
+                    <div class="property-help">What the blog post is about</div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <div class="property-label">Audience</div>
+                    <select class="property-select">
+                        <option>Dropdown</option>
+                        <option>Text Input</option>
+                        <option>Radio Buttons</option>
+                    </select>
+                    <div class="property-help">Who will read this content</div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <div class="property-label">Key Points</div>
+                    <select class="property-select">
+                        <option>Text Area (List)</option>
+                        <option>Multiple Inputs</option>
+                        <option>Checkboxes</option>
+                    </select>
+                    <div class="property-help">Main topics to cover</div>
+                </div>
+
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;">
+                    + Add Variable
+                </button>
+            </div>
+
+            <div class="property-group">
+                <h3 style="font-size: 16px; margin-bottom: 16px;">AI Settings</h3>
+                
+                <div style="margin-bottom: 16px;">
+                    <div class="property-label">Writing Style</div>
+                    <select class="property-select">
+                        <option>Professional</option>
+                        <option>Conversational</option>
+                        <option>Academic</option>
+                        <option>Creative</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <div class="property-label">Content Length</div>
+                    <select class="property-select">
+                        <option>Auto (AI decides)</option>
+                        <option>Short (500-700 words)</option>
+                        <option>Medium (1000-1500 words)</option>
+                        <option>Long (2000+ words)</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary preview-btn">
+                    👁️ Preview Template
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-content">
+            <div class="preview-header">
+                <h2>Template Preview</h2>
+                <button class="close-btn" onclick="closePreview()">×</button>
+            </div>
+            <div class="preview-body">
+                <h3 style="margin-bottom: 20px;">How your template will look to users:</h3>
+                
+                <div style="background: #f8f9fa; padding: 24px; border-radius: 8px;">
+                    <h4 style="margin-bottom: 16px;">Create a Blog Post</h4>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Topic</label>
+                        <input type="text" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;" 
+                               placeholder="What do you want to write about?">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Target Audience</label>
+                        <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                            <option>General Readers</option>
+                            <option>Business Professionals</option>
+                            <option>Students</option>
+                            <option>Technical Audience</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Key Points to Cover</label>
+                        <textarea style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; min-height: 100px;" 
+                                  placeholder="List the main points you want to discuss (one per line)"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox">
+                            <span>Include real-world examples</span>
+                        </label>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%;">Generate Blog Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple preview modal functionality
+        document.querySelector('.preview-btn').addEventListener('click', function() {
+            document.getElementById('previewModal').style.display = 'flex';
+        });
+
+        function closePreview() {
+            document.getElementById('previewModal').style.display = 'none';
+        }
+        
+        // Feature status integration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update visual builder status
+            const statusEl = document.getElementById('visualBuilderStatus');
+            if (statusEl && typeof createFeatureIndicator === 'function') {
+                statusEl.innerHTML = createFeatureIndicator('planned.visualBuilder');
+            }
+            
+            // Show feature status panel for this page
+            if (typeof createFeatureStatusPanel === 'function') {
+                const features = [
+                    ['Visual Template Builder', 'planned.visualBuilder'],
+                    ['Template Creation', 'templates.createTemplate'],
+                    ['Template Validation', 'templates.validateTemplate'],
+                    ['Template Preview', 'templates.previewTemplate'],
+                    ['Export to Multiple Formats', 'export.exportPDF'],
+                    ['AI Generation', 'generation.startGeneration']
+                ];
+                const panel = createFeatureStatusPanel(features);
+                document.body.insertAdjacentHTML('beforeend', panel);
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePreview();
+            }
+        });
+    </script>
+</body>
+</html>

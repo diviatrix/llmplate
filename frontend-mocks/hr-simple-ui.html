@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMplate - HR Use Case (Simple UI)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #666;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .ui-demo {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .step-indicator {
+            display: flex;
+            background: #fafafa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .step {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            border-right: 1px solid #e0e0e0;
+            color: #999;
+            font-weight: 500;
+        }
+        .step:last-child {
+            border-right: none;
+        }
+        .step.active {
+            background: white;
+            color: #4CAF50;
+            border-bottom: 3px solid #4CAF50;
+        }
+        .step.completed {
+            color: #4CAF50;
+        }
+        .content-area {
+            padding: 40px;
+        }
+        .template-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .template-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .template-card:hover {
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .template-card.selected {
+            border-color: #4CAF50;
+            background: #f1f8f4;
+        }
+        .template-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .template-name {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .template-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .simple-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .form-help {
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+        .button-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+        .result-preview {
+            background: #f8f8f8;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        .result-content {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .export-options {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .export-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .export-btn:hover {
+            border-color: #4CAF50;
+            background: #f1f8f4;
+        }
+        .use-case-header {
+            background: linear-gradient(135deg, #2196F3 0%, #42A5F5 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .use-case-title {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+        .use-case-desc {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .radio-option input[type="radio"] {
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">LLMplate</div>
+            <div class="user-info">
+                <span>Simple Mode</span>
+                <span>👤 Sarah Martinez, HR</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Use Case Header -->
+        <div class="use-case-header">
+            <h1 class="use-case-title">HR Document Generator</h1>
+            <p class="use-case-desc">Professional HR documents in minutes, not hours</p>
+        </div>
+
+        <!-- Main UI Demo -->
+        <div class="ui-demo">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step completed">1. Choose Document</div>
+                <div class="step completed">2. Enter Details</div>
+                <div class="step active">3. Review & Export</div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Step 1: Template Selection (Hidden) -->
+                <div style="display: none;">
+                    <h2 style="text-align: center; margin-bottom: 30px;">What HR document do you need?</h2>
+                    <div class="template-gallery">
+                        <div class="template-card selected">
+                            <div class="template-icon">💼</div>
+                            <div class="template-name">Job Description</div>
+                            <div class="template-desc">Create compelling job postings that attract the right candidates</div>
+                        </div>
+                        <div class="template-card">
+                            <div class="template-icon">📄</div>
+                            <div class="template-name">Offer Letter</div>
+                            <div class="template-desc">Professional offer letters with all necessary details</div>
+                        </div>
+                        <div class="template-card">
+                            <div class="template-icon">📊</div>
+                            <div class="template-name">Performance Review</div>
+                            <div class="template-desc">Comprehensive review templates with goal tracking</div>
+                        </div>
+                        <div class="template-card">
+                            <div class="template-icon">📋</div>
+                            <div class="template-name">Company Policy</div>
+                            <div class="template-desc">Clear, compliant policy documents</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Form (Hidden) -->
+                <div style="display: none;">
+                    <h2 style="text-align: center; margin-bottom: 30px;">Create Job Description</h2>
+                    <form class="simple-form">
+                        <div class="form-group">
+                            <label class="form-label">Job Title</label>
+                            <input type="text" placeholder="e.g., Senior Software Engineer" value="Senior Frontend Developer">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select>
+                                <option>Select department...</option>
+                                <option selected>Engineering</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                                <option>HR</option>
+                                <option>Finance</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Employment Type</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="employment" checked> Full-time
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="employment"> Part-time
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="employment"> Contract
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Experience Level</label>
+                            <select>
+                                <option>Entry Level (0-2 years)</option>
+                                <option>Mid Level (3-5 years)</option>
+                                <option selected>Senior Level (5+ years)</option>
+                                <option>Lead/Principal (8+ years)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Key Responsibilities (Brief)</label>
+                            <textarea placeholder="Main duties and responsibilities...">Lead frontend development, mentor junior developers, collaborate with design team</textarea>
+                            <p class="form-help">We'll expand these into detailed responsibilities</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Required Skills</label>
+                            <input type="text" placeholder="e.g., React, TypeScript, CSS" value="React, TypeScript, REST APIs, Git">
+                            <p class="form-help">Separate skills with commas</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Salary Range (Optional)</label>
+                            <input type="text" placeholder="e.g., $120,000 - $150,000" value="$130,000 - $160,000">
+                        </div>
+
+                        <div class="button-group">
+                            <button type="button" class="btn btn-secondary">← Back</button>
+                            <button type="button" class="btn btn-primary">Generate Job Description →</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 3: Results (Active) -->
+                <div>
+                    <h2 style="text-align: center; margin-bottom: 30px;">Your Job Description is Ready!</h2>
+                    
+                    <div class="result-preview">
+                        <h3 class="result-title">Senior Frontend Developer - Engineering</h3>
+                        <div class="result-content"><strong>About the Role</strong>
+We are seeking an experienced Senior Frontend Developer to join our growing Engineering team. This is a full-time position offering competitive compensation ($130,000 - $160,000) and the opportunity to work on cutting-edge web applications that impact millions of users.
+
+<strong>Key Responsibilities</strong>
+• Lead frontend development initiatives and architect scalable solutions
+• Mentor and guide junior developers, conducting code reviews and knowledge sharing sessions
+• Collaborate closely with the design team to implement pixel-perfect, responsive interfaces
+• Drive technical decisions and establish frontend best practices
+• Optimize application performance and ensure cross-browser compatibility
+• Participate in sprint planning and contribute to product roadmap discussions
+
+<strong>Required Qualifications</strong>
+• 5+ years of professional frontend development experience
+• Expert-level proficiency in React and its ecosystem
+• Strong TypeScript skills with understanding of type systems
+• Experience building and consuming REST APIs
+• Proficiency with Git and collaborative development workflows
+• Excellent problem-solving and communication skills
+• Bachelor's degree in Computer Science or equivalent experience
+
+<strong>Nice to Have</strong>
+• Experience with Next.js or similar frameworks
+• Knowledge of GraphQL
+• Experience with testing frameworks (Jest, React Testing Library)
+• Familiarity with CI/CD pipelines
+• Contributions to open-source projects
+
+<strong>What We Offer</strong>
+• Competitive salary range: $130,000 - $160,000
+• Comprehensive health, dental, and vision insurance
+• 401(k) with company matching
+• Flexible work arrangements
+• Professional development budget
+• Collaborative and inclusive work environment
+
+<em>We are an equal opportunity employer committed to building a diverse and inclusive team.</em></div>
+                    </div>
+
+                    <div class="export-options">
+                        <button class="export-btn">📄 Download PDF</button>
+                        <button class="export-btn">📝 Download Word</button>
+                        <button class="export-btn">📋 Copy Text</button>
+                        <button class="export-btn">
+                            🔗 Post to LinkedIn
+                            <span class="feature-inline-indicator"></span>
+                        </button>
+                        <button class="export-btn">📧 Email to Team</button>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary">Edit Details</button>
+                        <button type="button" class="btn btn-primary">Create Another Document</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div style="margin-top: 60px; text-align: center;">
+            <h2 style="margin-bottom: 30px;">Why HR Professionals Choose Our Simple Interface</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                <div>
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚡</div>
+                    <h3 style="margin-bottom: 8px;">75% Faster</h3>
+                    <p style="color: #666;">Create professional documents in minutes instead of hours</p>
+                </div>
+                <div>
+                    <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
+                    <h3 style="margin-bottom: 8px;">Always Compliant</h3>
+                    <p style="color: #666;">Templates updated with latest legal requirements</p>
+                </div>
+                <div>
+                    <div style="font-size: 48px; margin-bottom: 16px;">🎯</div>
+                    <h3 style="margin-bottom: 8px;">Consistent Quality</h3>
+                    <p style="color: #666;">Maintain brand voice across all communications</p>
+                </div>
+                <div>
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔄</div>
+                    <h3 style="margin-bottom: 8px;">Easy Updates</h3>
+                    <p style="color: #666;">Quickly modify and regenerate as needed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Feature status integration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update LinkedIn post status (planned feature)
+            const linkedinBtn = document.querySelector('.export-btn:nth-child(4)');
+            if (linkedinBtn && typeof createFeatureIndicator === 'function') {
+                const indicator = linkedinBtn.querySelector('.feature-inline-indicator');
+                if (indicator) indicator.innerHTML = createFeatureIndicator('planned.advancedSearch', true);
+            }
+            
+            // Show feature status panel
+            if (typeof createFeatureStatusPanel === 'function') {
+                const features = [
+                    ['Document Templates', 'templates.listTemplates'],
+                    ['AI Generation', 'generation.startGeneration'],
+                    ['Export to PDF', 'export.exportPDF'],
+                    ['Export to Word', 'export.exportHTML'],
+                    ['Copy to Clipboard', 'export.exportTXT'],
+                    ['LinkedIn Integration', 'planned.advancedSearch'],
+                    ['Email Export', 'planned.fileUploads']
+                ];
+                const panel = createFeatureStatusPanel(features);
+                document.body.insertAdjacentHTML('beforeend', panel);
+            }
+        });
+    </script>
+</body>
+</html>
